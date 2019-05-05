@@ -6,12 +6,12 @@ module.exports = {
     mode:'development',  //模式
     entry:'./src/public/index.js',
     output:{
-        filename:'main.js',
+        filename:'_23_aKvs-b8bW2Vg3fwHozO.js',
         path: path.resolve(__dirname, './src/dist')
     },
     plugins:[
         new HtmlWebpackPlugin({
-            template: './src/views/payment.htm',  
+            template: './src/views/payment.htm', 
             filename: 'index.htm',
             minify:{
                 removeAttributeQuotes: true,  //去除 双引号
@@ -21,7 +21,7 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             template: './src/public/style.css',
-            filename: 'main.css' 
+            filename: '_23_aKvs-b8bW2Vg3fwHozO.css'
         })
     ],
     module:{
@@ -34,7 +34,7 @@ module.exports = {
                             insertAt: 'top'  //出现在顶部
                         }
                     },
-                    // MiniCssExtractPlugin.loader,   //执行加密css
+                    MiniCssExtractPlugin.loader, 
                     'css-loader'
                 ]
             },
