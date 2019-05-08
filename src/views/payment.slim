@@ -4,10 +4,25 @@ html[lang="en"]
     meta[charset="UTF-8"]
     meta[name="viewport" content="width=device-width, initial-scale=1.0"]
     meta[http-equiv="X-UA-Compatible" content="ie=edge"]
+    script[src="//at.alicdn.com/t/font_1049864_267xyl54zrh.js"]
+    script[language="javascript" type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"]
     title
-      | 咖啡蜗支付
+      | 咖啡蜗支付平台
   body
-    div.background
-        - for i in (1..10)
-            div class="big-#{i}"
-      
+    ._container
+      form.metform[method="POST"]
+        ._icon_header
+          div
+          small
+            |  咖啡蜗 
+        label
+          |  消费金额 
+        ._money
+          span
+            i
+              svg.icon[aria-hidden="true"]
+                use[xlink:href="#ym-icon-rmb"]
+            small#_money
+              | 0.00
+        #_submit._submit
+          |  确定付款 

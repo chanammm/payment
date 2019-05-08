@@ -99,7 +99,7 @@ body{
     min-width: 320px;
     overflow: hidden;
     margin: 0 auto;
-    font-size: 1.2rem
+    font-size: 1rem
 }
 
 /* ####### icon loader  ######## */
@@ -132,12 +132,12 @@ body{
 }
 ._submit{
     width: 80%;
-    height: 50px;
+    height: 40px;
     border-radius: 5px !important;
     background: rgb(10, 192, 10);
     color: #fff;
     text-align: center;
-    line-height: 50px;
+    line-height: 40px;
     margin: 0 auto;
     position: fixed;
     bottom: 20px;

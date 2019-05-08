@@ -7,8 +7,9 @@ const _conf = {
 
 class _wx_secret {
     constructor(_secret) {
-        this.secret = _secret.secret
-        this.code = _secret.code
+        _secret = _secret || {}
+        this.secret = _secret.secret || ''
+        this.code = _secret.code || ''
     }
 
     get(_code) {
@@ -17,7 +18,7 @@ class _wx_secret {
         return null;
     }
 
-    login() {
+    login() {  //登陆
         let it = this;
         this._xml({
             method: 'GET',
@@ -33,22 +34,24 @@ class _wx_secret {
                 }));
                 if (res.type === '1') {
                     try {
-                        it.record(res.user_id);
+                        it.record(res.user_id, res.user_token);
                     } catch (error) {
                         alert(error);
                     }
                 }
+                _wx_.unpaid(); //查询 订单金额
             }
         })
     }
 
-    record(_userid) {
+    record(_userid,_token) {  //提交用户信息
         this._xml({
             method: 'GET',
             uri: _conf.httpJoin + 'record_user_source',
             async: true,
             xmldata: {
                 userId: _userid,
+                userToken: _token,
                 machineNumber: JSON.parse(sessionStorage.getItem('_token')).machineNumber,
                 source: 1
             },
@@ -58,18 +61,19 @@ class _wx_secret {
         })
     }
 
-    unpaid(){
+    unpaid(){  //查询产品详细数据
         this._xml({
             method: 'GET',
-            uri: _conf.httpJoin + 'unpaid_order_detail',
+            uri: _conf.httpJoin + 'find_product_detail',
             async: true,
             xmldata: {
                 userId: JSON.parse(sessionStorage.getItem('token'))._id,
-                orderId: JSON.parse(sessionStorage.getItem('_token')).orderId
+                userToken: JSON.parse(sessionStorage.getItem('token'))._name,
+                productId: JSON.parse(sessionStorage.getItem('_token')).productId
             },
             done: function (res) {
-                if(res.statusCode.status === '6666'){
-                    document.getElementById('_money').innerHTML = parseFloat(res.unpaidOrder.productPrice / 100).toFixed(2)
+                if(res.statusCode.status == '6666'){
+                    document.getElementById('_money').innerHTML = parseFloat(res.productDetail.productPrice / 100).toFixed(2)
                 }else{
                     console.log(res.statusCode.msg);
                 }
@@ -84,8 +88,11 @@ class _wx_secret {
             uri: _conf.httpJoin + 'weChat_pay_machine',
             async: false,
             xmldata: {
-                orderId: JSON.parse(sessionStorage.getItem('_token')).orderId,
-                userId: JSON.parse(sessionStorage.getItem('token'))._id
+                productId: JSON.parse(sessionStorage.getItem('_token')).productId,
+                userToken: JSON.parse(sessionStorage.getItem('token'))._name,
+                userId: JSON.parse(sessionStorage.getItem('token'))._id,
+                machineNumber: JSON.parse(sessionStorage.getItem('_token')).machineNumber,
+                flavorData: JSON.parse(sessionStorage.getItem('_token')).flavorData
             },
             done: function (res) {
                 if (res.statusCode.status == '1009') {
@@ -105,7 +112,9 @@ class _wx_secret {
                                     uri: _conf.httpJoin + 'client_order_cancel',
                                     async: true,
                                     xmldata: {
-                                        orderId: JSON.parse(sessionStorage.getItem('_token')).orderId
+                                        productId: JSON.parse(sessionStorage.getItem('_token')).productId,
+                                        userToken: JSON.parse(sessionStorage.getItem('token'))._name,
+                                        userId: JSON.parse(sessionStorage.getItem('token'))._id
                                     },
                                     done: function (res) {
                                         console.log('已提交取消订单信息');
@@ -153,29 +162,27 @@ class _wx_secret {
         }
     }
 }
-var _wx_ = new _wx_secret({
-    secret: 'cnzmg',
-    code: '_mac_18'
-});
+var _wx_ = new _wx_secret();
 
 !sessionStorage.getItem('token') ? (_wx_.get('code') ? _wx_.login() : (() => {
     try {
-        if (!_wx_.get('orderId')) {
-            throw 'Error  orderId not empty';
+        if (!_wx_.get('productId')) {
+            throw 'Error  productId not empty';
         } else {
             sessionStorage.setItem('_token', JSON.stringify({
                 machineNumber: _wx_.get('machineNumber'),
-                orderId: _wx_.get('orderId')
+                productId: _wx_.get('productID'),
+                flavorData: _wx_.get('favorDatas') ? _wx_.get('favorDatas') : []
+
             }))
             location.href = _conf._wx_httpJoin;
         }
     } catch (error) {
         alert(error);
     }
-})()) : null;
+})()) : _wx_.unpaid(); //查询 订单金额
 
 document.getElementById('_submit').addEventListener('click', () => {
     _wx_.post();
 }, true)
-//查询 订单金额
-_wx_.unpaid();
+
