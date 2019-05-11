@@ -171,8 +171,8 @@ var _wx_ = new _wx_secret();
         } else {
             sessionStorage.setItem('_token', JSON.stringify({
                 machineNumber: _wx_.get('machineNumber'),
-                productId: _wx_.get('productID'),
-                flavorData: _wx_.get('favorDatas') ? _wx_.get('favorDatas') : []
+                productId: _wx_.get('productId'),
+                flavorData: _wx_.get('flavorData') ? _wx_.get('flavorData') : []
 
             }))
             location.href = _conf._wx_httpJoin;
