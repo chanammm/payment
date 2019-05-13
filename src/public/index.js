@@ -73,7 +73,8 @@ class _wx_secret {
             },
             done: function (res) {
                 if(res.statusCode.status == '6666'){
-                    document.getElementById('_money').innerHTML = parseFloat(res.productDetail.productPrice / 100).toFixed(2)
+                    document.getElementById('_money').innerHTML = parseFloat(res.productDetail.productPrice / 100).toFixed(2);
+                    document.getElementById('_product').innerHTML = res.productDetail.productName + `<small> (ID: ${ res.productDetail.productId })</small>`;
                 }else{
                     console.log(res.statusCode.msg);
                 }
@@ -106,20 +107,10 @@ class _wx_secret {
                             "timeStamp": res.timeStamp  //时间戳，自1970年以来的秒数
                         },
                         function (res) {
-                            res.err_msg == "get_brand_wcpay_request:ok" ? console.log(res)/*/ 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。/*/ : (() => {
-                                it._xml({
-                                    method: 'GET',
-                                    uri: _conf.httpJoin + 'client_order_cancel',
-                                    async: true,
-                                    xmldata: {
-                                        productId: JSON.parse(sessionStorage.getItem('_token')).productId,
-                                        userToken: JSON.parse(sessionStorage.getItem('token'))._name,
-                                        userId: JSON.parse(sessionStorage.getItem('token'))._id
-                                    },
-                                    done: function (res) {
-                                        console.log('已提交取消订单信息');
-                                    }
-                                })
+                            res.err_msg == "get_brand_wcpay_request:ok" ? (e => {
+                                window.location = "view/successfull.htm?_successfull=" + e;
+                            }) /*/ 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。/*/ : (() => {
+                                throw "支付失败！Error: "+ res.err_msg
                             });
                         }
                     )
@@ -185,4 +176,3 @@ var _wx_ = new _wx_secret();
 document.getElementById('_submit').addEventListener('click', () => {
     _wx_.post();
 }, true)
-

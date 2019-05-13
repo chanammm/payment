@@ -125,10 +125,20 @@ body{
 ._icon_header div{
     width: 80px;
     height: 80px;
-    background: url('http://admin.cbcoffee.cn/manage/img/1516775224.jpg') no-repeat center;
+    background: url('1516775224.jpg') no-repeat center;
     background-size: 100%;
     border-radius: 50% !important;
     margin: 10px auto;
+}
+._icon_header .icon{
+    color: #0ac00a;
+    font-size: 3.8rem;
+}
+._successfull{
+    padding:0 !important;
+}
+._successfull_{
+    margin-top: 10%;
 }
 ._submit{
     width: 80%;
@@ -167,8 +177,57 @@ body{
     font-size: 3rem;
     color: #000;
 }
+._product{
+    text-align: center;
+    margin: 10px 0;
+}
+._product small{
+    display: block;
+}
 @media (max-width: 320px){
     .metform ._money span{
         width: 50%;
     }
+}
+
+/* ._successfull */
+._successfull_body{
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    padding: 20% 20px;
+    box-sizing: border-box;
+}
+._successfull_body p{
+    color: #ccc;
+    width: 100%;
+    display: flow-root;
+    font-size: 1rem;
+}
+._successfull_body p small{
+    display: block;
+}
+._successfull_body p small:nth-of-type(1){
+    float: left;
+}
+._successfull_body p small:nth-of-type(2){
+    float: right;
+}
+._successfull_done{
+    text-align: center;
+    line-height: 50px;
+    border-radius: 10px !important;
+    color:#008ff9;
+    border:1px solid #008ff9;
+    margin-top: 12%;
+}
+._line{
+    width:300%;
+    color: #ccc;
+    overflow: hidden;
+}
+._successfull_active{
+    text-align: center;
+    line-height: 60px;
+    font-size: 1.4rem;
 }
