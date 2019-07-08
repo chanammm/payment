@@ -12,7 +12,7 @@ module.exports = {
             new optimizecssassets()
         ]
     },
-    mode:'development',  //模式
+    mode:'production',  //模式 development ,production
     entry:{
         index:'./src/public/index.js',
         successfull: './src/public/successfull.js'
@@ -25,16 +25,16 @@ module.exports = {
     },
     output:{
         filename:'[name]_23_aKvs-b8bW2Vg3fwHozO.js',
-        path: path.resolve(__dirname, './src/dist/')
+        path: path.resolve(__dirname, './src/dist/javascripts/')
     },
     plugins:[
         new MiniCssExtractPlugin({
             template: './src/public/style.css',
-            filename: 'stylesheets/_23_aKvs-b8bW2Vg3fwHozO.css'
+            filename: '../stylesheets/_23_aKvs-b8bW2Vg3fwHozO.css'
         }),
         new HtmlWebpackPlugin({
             template: './src/views/payment.htm', 
-            filename: 'index.htm',
+            filename: '../index.htm',
             minify:{
                 removeAttributeQuotes: true,  //去除 双引号
                 collapseWhitespace: true   //加密
@@ -44,7 +44,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: './src/views/successfull.htm',
-            filename: 'view/successfull.htm',
+            filename: '../view/successfull.htm',
             minify:{
                 removeAttributeQuotes: true,
                 collapseWhitespace: true

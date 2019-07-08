@@ -3,11 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
     <script src="//at.alicdn.com/t/font_1049864_idjvdwn1tm.js"></script>
     <script language="javascript" type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
-    <title>咖啡蜗支付平台</title>
+    <title>微信支付</title>
 </head>
 
 <body>
@@ -23,12 +26,14 @@
             </div>
             <div class="_money">
                 <span>
-                    <i>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#ym-icon-rmb"></use>
-                        </svg>
-                    </i>
-                    <small id="_money">0.00</small>
+
+                    <small id="_money">
+                        <i>
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#ym-icon-rmb"></use>
+                            </svg>
+                        </i>
+                        0.00</small>
                 </span>
             </div>
             <div class="_successfull_body">
@@ -37,7 +42,7 @@
                     <small>微信支付</small>
                 </p>
                 <p>
-                    <small>付款方式</small>
+                    <small>收款方</small>
                     <small>咖啡蜗</small>
                 </p>
 
@@ -45,9 +50,9 @@
                     完成
                 </div>
             </div>
-            <div class="_line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </div>
-            <div class="_successfull_active">
-                活动板块
+            <!-- <div class="_line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </div> -->
+            <div class="_successfull_active" id="_successfull_goto">
             </div>
         </form>
     </div>

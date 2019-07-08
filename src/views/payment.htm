@@ -3,14 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
     <script src="//at.alicdn.com/t/font_1049864_267xyl54zrh.js"></script>
     <script language="javascript" type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
-    <title>咖啡蜗支付平台</title>
+    <title>微信支付</title>
 </head>
 
 <body>
+    <div class="showbox" id="showbox">
+        <div class="loader">
+            <span class="spinner"></span>
+        </div>
+    </div>
     <div class="_container">
         <form method="POST" class="metform">
             <div class="_icon_header">
@@ -30,12 +38,13 @@
             </label>
             <div class="_money">
                 <span>
-                    <i>
-                        <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#ym-icon-rmb"></use>
-                        </svg>
-                    </i>
-                    <small id="_money">0.00</small>
+                    <small id="_money">
+                        <i>
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#ym-icon-rmb"></use>
+                            </svg>
+                        </i>
+                        0.00</small>
                 </span>
             </div>
             <div class="_submit" id="_submit">
