@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', function(){
     try {
         if(location.href.split('?')[1] == 0o767){
             document.getElementById('_successfull_goto').addEventListener('click', function(){
-                window.location.href = 'https://mp.weixin.qq.com/s/xlUZ3C5_bcdRoOGsyordqg'; // 跳转问下图文
+                window.location.href = 'https://mp.weixin.qq.com/s/cBCSCdjTrS_qveSVnkssww'; // 跳转问下图文
             });
             document.getElementById('_successfull_').addEventListener('click', function(){
-                window.location.href = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzI4NjkxMDE2Ng==#wechat_redirect'
+                window.location.href = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzI4NjkxMDE2Ng==#wechat_redirect';  //关注公众号
             });
         }else{
             alert('Error not supported or defined');
